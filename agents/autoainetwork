@@ -1,0 +1,178 @@
+# === AUTONOMOUS AI AGENT NETWORK ===
+# GitHub Repo Layout (Root Level)
+
+agents/
+├── __init__.py
+├── agent_spawner.py         # Spawns new agents dynamically
+├── task_manager.py          # Assigns tasks to available agents
+├── agent_optimizer.py       # Evaluates agent performance
+├── system_evolver.py        # Oversees system evolution
+└── garbage_collector.py     # Removes non-useful files/data
+
+utils/
+├── logger.py                # Unified logging across modules
+├── memory.py                # Embeds short and long-term memory
+└── file_handler.py          # Manages file I/O and disposal
+
+core/
+├── main.py                  # Master runtime entrypoint
+└── scheduler.py             # Task queue logic
+
+.env.example                 # Environment variable template
+requirements.txt             # Python dependencies
+Dockerfile                   # Container setup for RunPod
+README.md                    # Full setup, deployment, and usage guide
+start.sh                     # Launch script for RunPod
+
+# === agents/__init__.py ===
+# (empty file to mark the directory as a package)
+
+# === agents/agent_spawner.py ===
+import subprocess
+
+def spawn_agent(name):
+    subprocess.Popen(["python", f"agents/{name}.py"])
+
+# === agents/task_manager.py ===
+tasks = []
+
+def assign_task(agent):
+    if tasks:
+        return tasks.pop(0)
+    return None
+
+# === agents/agent_optimizer.py ===
+def evaluate_agent(agent_log):
+    # Stub for evaluating agent performance
+    return True
+
+# === agents/system_evolver.py ===
+def evolve():
+    print("Evolving system...")
+    # Add evolution strategy here
+
+# === agents/garbage_collector.py ===
+import os
+
+def clean(folder):
+    for f in os.listdir(folder):
+        if f.endswith(".tmp") or f.startswith("_old"):
+            os.remove(os.path.join(folder, f))
+
+# === utils/logger.py ===
+def log(msg):
+    with open("system.log", "a") as f:
+        f.write(msg + "\n")
+
+# === utils/memory.py ===
+short_term_memory = []
+long_term_memory = []
+
+def remember(event):
+    short_term_memory.append(event)
+    if len(short_term_memory) > 100:
+        long_term_memory.extend(short_term_memory)
+        short_term_memory.clear()
+
+# === utils/file_handler.py ===
+def read_file(path):
+    with open(path, "r") as f:
+        return f.read()
+
+def delete_file(path):
+    os.remove(path)
+
+# === core/main.py ===
+from agents import agent_spawner
+from core.scheduler import schedule
+
+def main():
+    agent_spawner.spawn_agent("worker")
+    schedule()
+
+if __name__ == "__main__":
+    main()
+
+# === core/scheduler.py ===
+def schedule():
+    print("Scheduling tasks...")
+    # implement scheduler logic here
+
+# === .env.example ===
+API_KEY=your-api-key-here
+SUPABASE_URL=https://your-db.supabase.co
+SUPABASE_SERVICE_KEY=your-supabase-service-role-key
+DISCORD_WEBHOOK=https://discord.com/api/webhooks/your-webhook
+
+# === requirements.txt ===
+openai
+requests
+supabase
+python-dotenv
+discord-webhook
+
+# === Dockerfile ===
+FROM python:3.10-slim
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["python", "core/main.py"]
+
+# === start.sh ===
+#!/bin/bash
+export $(cat .env | xargs)
+python core/main.py
+
+# === README.md ===
+# Autonomous AI Agent Network
+
+## Overview
+This system spawns and manages autonomous agents that scrape data, generate resumes, optimize themselves, and clean unused files.
+
+## Setup
+```bash
+git clone https://github.com/yourusername/ai-agent-network.git
+cd ai-agent-network
+cp .env.example .env
+# Fill in .env with your credentials
+bash start.sh
+```
+
+## Deployment on RunPod
+Use the Dockerfile and `start.sh` to run this system on any pod.
+
+# === HOW TO PUSH TO GITHUB ===
+
+## STEP 1: Create Repo on Github
+1. Go to [https://github.com/new](https://github.com/new)
+2. Name it: `ai-agent-network`
+3. Set to public or private
+
+## STEP 2: Push Code
+In your terminal:
+```bash
+git init
+git remote add origin https://github.com/yourusername/ai-agent-network.git
+git add .
+git commit -m "Initial commit: Autonomous AI Agent Network"
+git branch -M main
+git push -u origin main
+```
+
+## STEP 3: Update Secrets
+# === OPENAI / LLMs ===
+API_KEY=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
+
+# === SUPABASE ===
+SUPABASE_URL=https://gycdfrmozoozkvshnxtd.supabase.com
+SUPABASE_SERVICE_KEY=Bq2gzABVPWQNiQj_-Sypz_qKXxqDcI4WhISxeJKNyG0
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5Y2Rmcm1vem9vemt2c2hueHRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDkzODEsImV4cCI6MjA2NDA4NTM4MX0.lfwHv-dtvhb3bbci0mzhd3qr_zvzwjAhVtgt9zauh1w
+
+# === DISCORD ===
+DISCORD_WEBHOOK=https://discord.com/api/webhooks/1377631457824079872/MujvTun2Vw49jsswogIZaMAPCGM4c82vZaxNydYK1UvKjOYHGTGwRVRQOmAVWv7g5hjY
+
+# === TWILIO ===
+TWILIO_SID=AC8beaba125bc8c72c384322900f16e844
+TWILIO_AUTH=752acc985eba529cca7e77cf95341b59
+TWILIO_NUMBER=+13412323568
+
